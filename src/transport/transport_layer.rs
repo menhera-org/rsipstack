@@ -1,11 +1,12 @@
-use super::tls::TlsConnection;
-use super::websocket::WebSocketConnection;
 use super::{connection::TransportSender, sip_addr::SipAddr, tcp::TcpConnection, SipConnection};
 use crate::transaction::key::TransactionKey;
 use crate::transport::connection::TransportReceiver;
 use crate::{transport::TransportEvent, Result};
+#[cfg(feature = "dns")]
 use rsip_dns::trust_dns_resolver::TokioAsyncResolver;
+#[cfg(feature = "dns")]
 use rsip_dns::ResolvableExt;
+#[cfg(feature = "dns")]
 use std::net::SocketAddr;
 use std::sync::{Mutex, RwLock};
 use std::{collections::HashMap, sync::Arc};
@@ -153,40 +154,50 @@ impl TransportLayerInner {
         outbound: Option<&SipAddr>,
         key: Option<&TransactionKey>,
     ) -> Result<(SipConnection, SipAddr)> {
-        let target = outbound.unwrap_or(destination);
-        let target = if matches!(target.addr.host, rsip::Host::Domain(_)) {
-            let target = rsip::uri::Uri {
-                scheme: Some(rsip::Scheme::Sip),
-                host_with_port: target.addr.clone(),
-                ..Default::default()
-            };
-            let context = rsip_dns::Context::initialize_from(
-                target,
-                rsip_dns::AsyncTrustDnsClient::new(
-                    TokioAsyncResolver::tokio(Default::default(), Default::default()).unwrap(),
-                ),
-                rsip_dns::SupportedTransports::any(),
-            )?;
+        let target_base = outbound.cloned().unwrap_or_else(|| destination.clone());
 
-            let mut lookup = rsip_dns::Lookup::from(context);
-            match lookup.resolve_next().await {
-                Some(result) => &SipAddr {
-                    r#type: Some(result.transport),
-                    addr: rsip::HostWithPort::from(SocketAddr::new(
-                        result.ip_addr,
-                        u16::from(result.port),
-                    )),
-                },
-                None => {
-                    return Err(crate::Error::DnsResolutionError(format!(
-                        "DNS resolution error: {}",
-                        destination
-                    )));
+        #[cfg(feature = "dns")]
+        let mut target = target_base;
+
+        #[cfg(not(feature = "dns"))]
+        let target = target_base;
+
+        #[cfg(feature = "dns")]
+        {
+            if matches!(target.addr.host, rsip::Host::Domain(_)) {
+                let uri = rsip::uri::Uri {
+                    scheme: Some(rsip::Scheme::Sip),
+                    host_with_port: target.addr.clone(),
+                    ..Default::default()
+                };
+                let resolver = TokioAsyncResolver::tokio(Default::default(), Default::default())
+                    .map_err(|e| crate::Error::DnsResolutionError(e.to_string()))?;
+                let context = rsip_dns::Context::initialize_from(
+                    uri,
+                    rsip_dns::AsyncTrustDnsClient::new(resolver),
+                    rsip_dns::SupportedTransports::any(),
+                )?;
+
+                let mut lookup = rsip_dns::Lookup::from(context);
+                match lookup.resolve_next().await {
+                    Some(result) => {
+                        target = SipAddr {
+                            r#type: Some(result.transport),
+                            addr: rsip::HostWithPort::from(SocketAddr::new(
+                                result.ip_addr,
+                                u16::from(result.port),
+                            )),
+                        };
+                    }
+                    None => {
+                        return Err(crate::Error::DnsResolutionError(format!(
+                            "DNS resolution error: {}",
+                            destination
+                        )));
+                    }
                 }
             }
-        } else {
-            target
-        };
+        }
 
         debug!(?key, "lookup target: {} -> {}", destination, target);
         match self.connections.read() {
@@ -203,48 +214,25 @@ impl TransportLayerInner {
                 )));
             }
         }
-        match target.r#type {
-            Some(
-                rsip::transport::Transport::Tcp
-                | rsip::transport::Transport::Tls
-                | rsip::transport::Transport::Ws
-                | rsip::transport::Transport::Wss,
-            ) => {
-                let sip_connection = match target.r#type {
-                    Some(rsip::transport::Transport::Tcp) => {
-                        let connection =
-                            TcpConnection::connect(target, Some(self.cancel_token.child_token()))
-                                .await?;
-                        SipConnection::Tcp(connection)
-                    }
-                    Some(rsip::transport::Transport::Tls) => {
-                        let connection = TlsConnection::connect(
-                            target,
-                            None,
-                            Some(self.cancel_token.child_token()),
-                        )
-                        .await?;
-                        SipConnection::Tls(connection)
-                    }
-                    Some(rsip::transport::Transport::Ws | rsip::transport::Transport::Wss) => {
-                        let connection = WebSocketConnection::connect(
-                            target,
-                            Some(self.cancel_token.child_token()),
-                        )
-                        .await?;
-                        SipConnection::WebSocket(connection)
-                    }
-                    _ => {
-                        return Err(crate::Error::TransportLayerError(
-                            format!("unsupported transport type: {:?}", target.r#type),
-                            target.to_owned(),
-                        ));
-                    }
-                };
-                self.add_connection(sip_connection.clone());
-                return Ok((sip_connection, target.clone()));
+
+        if let Some(transport) = target.r#type.clone() {
+            match transport {
+                rsip::transport::Transport::Tcp => {
+                    let connection =
+                        TcpConnection::connect(&target, Some(self.cancel_token.child_token()))
+                            .await?;
+                    let sip_connection = SipConnection::Tcp(connection);
+                    self.add_connection(sip_connection.clone());
+                    return Ok((sip_connection, target));
+                }
+                rsip::transport::Transport::Udp => {}
+                other => {
+                    return Err(crate::Error::TransportLayerError(
+                        format!("unsupported transport type: {:?}", other),
+                        target.clone(),
+                    ));
+                }
             }
-            _ => {}
         }
 
         let listens = match self.listens.read() {
@@ -262,7 +250,7 @@ impl TransportLayerInner {
             if addr.r#type == Some(rsip::transport::Transport::Udp) && first_udp.is_none() {
                 first_udp = Some(transport.clone());
             }
-            if addr == target {
+            if addr == &target {
                 return Ok((transport.clone(), target.clone()));
             }
         }
@@ -283,13 +271,6 @@ impl TransportLayerInner {
                 Ok(())
             }
             SipConnection::TcpListener(connection) => connection.serve_listener(self.clone()).await,
-            #[cfg(feature = "rustls")]
-            SipConnection::TlsListener(connection) => connection.serve_listener(self.clone()).await,
-            #[cfg(feature = "websocket")]
-            SipConnection::WebSocketListener(connection) => {
-                connection.serve_listener(self.clone()).await
-            }
-
             _ => {
                 warn!(
                     "serve_listener: unsupported transport type: {:?}",
@@ -332,7 +313,9 @@ mod tests {
         transport::{udp::UdpConnection, SipAddr},
         Result,
     };
+    #[cfg(feature = "dns")]
     use rsip::{Host, Transport};
+    #[cfg(feature = "dns")]
     use rsip_dns::{trust_dns_resolver::TokioAsyncResolver, ResolvableExt};
 
     #[tokio::test]
@@ -376,6 +359,7 @@ mod tests {
         Ok(())
     }
 
+    #[cfg(feature = "dns")]
     #[tokio::test]
     async fn test_rsip_dns_lookup() -> Result<()> {
         let check_list = vec![
@@ -386,26 +370,6 @@ mod tests {
             (
                 "sip:bob@127.0.0.1:5062;transport=tcp",
                 ("bob", "127.0.0.1", 5062, Transport::Tcp),
-            ),
-            (
-                "sip:bob@localhost:5063;transport=tls",
-                ("bob", "127.0.0.1", 5063, Transport::Tls),
-            ),
-            (
-                "sip:bob@localhost:5064;transport=TLS-SCTP",
-                ("bob", "127.0.0.1", 5064, Transport::TlsSctp),
-            ),
-            (
-                "sip:bob@localhost:5065;transport=sctp",
-                ("bob", "127.0.0.1", 5065, Transport::Sctp),
-            ),
-            (
-                "sip:bob@localhost:5066;transport=ws",
-                ("bob", "127.0.0.1", 5066, Transport::Ws),
-            ),
-            (
-                "sip:bob@localhost:5067;transport=wss",
-                ("bob", "127.0.0.1", 5067, Transport::Wss),
             ),
         ];
         for item in check_list {

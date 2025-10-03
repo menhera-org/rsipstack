@@ -88,58 +88,6 @@ fn test_via_received_tcp_different_addr() {
 }
 
 #[test]
-fn test_via_received_tls() {
-    let register_req = create_test_request("SIP/2.0/TLS");
-    let addr: SocketAddr = "192.168.1.100:5061".parse().unwrap();
-
-    let msg = SipConnection::update_msg_received(register_req.into(), addr, Transport::Tls)
-        .expect("update_msg_received for TLS");
-
-    match msg {
-        SipMessage::Request(req) => {
-            let via_header = req.via_header().expect("via header");
-            let typed_via = via_header.typed().expect("typed via");
-
-            // TLS should add received parameter only if host differs
-            assert!(
-                typed_via
-                    .params
-                    .iter()
-                    .any(|p| matches!(p, rsip::Param::Received(_))),
-                "TLS should add received parameter when host differs"
-            );
-        }
-        _ => panic!("Expected request message"),
-    }
-}
-
-#[test]
-fn test_via_received_ws() {
-    let register_req = create_test_request("SIP/2.0/WS");
-    let addr: SocketAddr = "192.168.1.100:80".parse().unwrap();
-
-    let msg = SipConnection::update_msg_received(register_req.into(), addr, Transport::Ws)
-        .expect("update_msg_received for WS");
-
-    match msg {
-        SipMessage::Request(req) => {
-            let via_header = req.via_header().expect("via header");
-            let typed_via = via_header.typed().expect("typed via");
-
-            // WS should handle received parameter like other connection-oriented protocols
-            assert!(
-                typed_via
-                    .params
-                    .iter()
-                    .any(|p| matches!(p, rsip::Param::Received(_))),
-                "WS should add received parameter when host differs"
-            );
-        }
-        _ => panic!("Expected request message"),
-    }
-}
-
-#[test]
 fn test_via_response_not_modified() {
     let response = rsip::message::Response {
         status_code: rsip::StatusCode::try_from(200).unwrap(),

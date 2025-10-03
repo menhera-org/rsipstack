@@ -1,5 +1,4 @@
 use clap::Parser;
-use futures::future::{self, Future};
 use ftth_rsipstack::dialog::dialog::{
     Dialog, DialogState, DialogStateReceiver, DialogStateSender, TerminatedReason,
 };
@@ -13,6 +12,7 @@ use ftth_rsipstack::{
     transport::{udp::UdpConnection, TransportLayer},
     EndpointBuilder, Error,
 };
+use futures::future::{self, Future};
 use std::collections::HashMap;
 use std::pin::Pin;
 use std::sync::Mutex;

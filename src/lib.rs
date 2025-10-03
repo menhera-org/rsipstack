@@ -9,7 +9,7 @@
 //! ## Features
 //!
 //! * **Complete SIP Implementation** - Full RFC 3261 compliance
-//! * **Multiple Transports** - UDP, TCP, TLS, WebSocket support
+//! * **Multiple Transports** - UDP and TCP support
 //! * **Transaction Layer** - Automatic retransmissions and timer management
 //! * **Dialog Management** - Full dialog state machine implementation
 //! * **Async/Await Support** - Built on Tokio for high performance
@@ -172,30 +172,6 @@
 //! # }
 //! ```
 //!
-//! ### Secure TLS Server
-//!
-//! ```rust,no_run
-//! #[cfg(feature = "rustls")]
-//! use rsipstack::transport::tls::{TlsConnection, TlsConfig};
-//! use rsipstack::transport::TransportLayer;
-//!
-//! # async fn example() -> rsipstack::Result<()> {
-//! # let cert_pem = vec![];
-//! # let key_pem = vec![];
-//! # let transport_layer: TransportLayer = todo!();
-//! // Configure TLS transport
-//! let tls_config = TlsConfig {
-//!     cert: Some(cert_pem),
-//!     key: Some(key_pem),
-//!     ..Default::default()
-//! };
-//!
-//! // TLS connections would be created using the TLS configuration
-//! // let tls_conn = TlsConnection::serve_listener(...).await?;
-//! # Ok(())
-//! # }
-//! ```
-//!
 //! ## Standards Compliance
 //!
 //! RSIPStack implements the following RFCs:
@@ -228,7 +204,6 @@
 //!
 //! * Simple SIP client
 //! * SIP proxy server
-//! * WebSocket SIP gateway
 //! * Load testing tools
 
 pub type Result<T> = std::result::Result<T, crate::error::Error>;

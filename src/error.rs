@@ -27,9 +27,6 @@ pub enum Error {
     #[error("Address parse error: {0}")]
     AddrParseError(#[from] std::net::AddrParseError),
 
-    #[error("WebSocket error: {0}")]
-    WebSocketError(#[from] tokio_tungstenite::tungstenite::Error),
-
     #[error("Error: {0}")]
     Error(String),
 }

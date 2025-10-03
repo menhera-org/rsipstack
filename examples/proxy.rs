@@ -1,51 +1,35 @@
-use axum::extract::ws::Message;
-use axum::extract::ws::WebSocket;
-use axum::extract::ConnectInfo;
-use axum::extract::FromRequestParts;
 use axum::response::Html;
-use axum::{
-    extract::{ws::WebSocketUpgrade, State},
-    response::IntoResponse,
-    routing::get,
-    Router,
-};
+use axum::{routing::get, Router};
 use clap::Parser;
-use futures::{SinkExt, StreamExt};
-use get_if_addrs::get_if_addrs;
-use rsip::headers::UntypedHeader;
-use rsip::prelude::{HeadersExt, ToTypedHeader};
-use rsip::SipMessage;
 use ftth_rsipstack::dialog::DialogId;
 use ftth_rsipstack::rsip_ext::{extract_uri_from_contact, RsipHeadersExt};
 use ftth_rsipstack::transaction::endpoint::EndpointInnerRef;
 use ftth_rsipstack::transaction::key::{TransactionKey, TransactionRole};
 use ftth_rsipstack::transaction::transaction::Transaction;
 use ftth_rsipstack::transaction::TransactionReceiver;
-use ftth_rsipstack::transport::channel::ChannelConnection;
 use ftth_rsipstack::transport::tcp_listener::TcpListenerConnection;
 use ftth_rsipstack::transport::udp::UdpConnection;
-#[cfg(feature = "websocket")]
-use ftth_rsipstack::transport::websocket::WebSocketListenerConnection;
 use ftth_rsipstack::transport::SipAddr;
 use ftth_rsipstack::transport::{SipConnection, TransportEvent};
 use ftth_rsipstack::{header_pop, Error, Result};
 use ftth_rsipstack::{transport::TransportLayer, EndpointBuilder};
+use get_if_addrs::get_if_addrs;
+use rsip::headers::UntypedHeader;
+use rsip::prelude::{HeadersExt, ToTypedHeader};
+use rsip::SipMessage;
 use std::collections::{HashMap, HashSet};
-use std::fmt;
-use std::fmt::Formatter;
 use std::net::IpAddr;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::{env, vec};
 use tokio::select;
-use tokio::sync::mpsc;
 use tokio::sync::Mutex;
 use tokio_util::sync::CancellationToken;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tracing::{info, warn};
 
-/// A SIP proxy server that supports UDP, TCP and WebSocket clients
+/// A SIP proxy server that supports UDP and TCP clients
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -63,10 +47,6 @@ struct Args {
     /// TCP port
     #[arg(long)]
     tcp_port: Option<u16>,
-
-    /// WebSocket port
-    #[arg(long)]
-    ws_port: Option<u16>,
 
     /// HTTP server port for web interface
     #[arg(long)]
@@ -170,46 +150,13 @@ async fn main() -> Result<()> {
         info!("Starting HTTP server on {}", http_addr);
         let listener = tokio::net::TcpListener::bind(http_addr).await?;
         Some(tokio::spawn(async move {
-            axum::serve(
-                listener,
-                app.into_make_service_with_connect_info::<SocketAddr>(),
-            )
-            .await
-            .unwrap();
+            axum::serve(listener, app.into_make_service())
+                .await
+                .unwrap();
         }))
     } else {
         None
     };
-
-    if let Some(ws_port) = args.ws_port {
-        #[cfg(feature = "websocket")]
-        {
-            let local_addr = SipAddr {
-                addr: format!("{}:{}", addr, ws_port)
-                    .parse::<std::net::SocketAddr>()?
-                    .into(),
-                r#type: Some(rsip::transport::Transport::Ws),
-            };
-            let external_addr = if !external_ip.is_empty() {
-                Some(format!("{}:{}", external_ip, ws_port).parse::<std::net::SocketAddr>()?)
-            } else {
-                None
-            };
-            let ws_listener =
-                WebSocketListenerConnection::new(local_addr.clone(), external_addr, false).await?;
-            app_state
-                .inner
-                .endpoint_ref
-                .transport_layer
-                .add_transport(ws_listener.into());
-
-            info!("Added WebSocket transport on {}", local_addr.addr);
-        }
-        #[cfg(not(feature = "websocket"))]
-        {
-            warn!("WebSocket feature not enabled");
-        }
-    }
 
     let incoming = endpoint.incoming_transactions()?;
     select! {
@@ -543,223 +490,15 @@ async fn handle_bye(state: AppState, mut tx: Transaction) -> Result<()> {
     Ok(())
 }
 
-pub struct ClientAddr(SocketAddr);
-impl ClientAddr {
-    pub fn new(addr: SocketAddr) -> Self {
-        ClientAddr(addr)
-    }
-}
-
-impl<S> FromRequestParts<S> for ClientAddr
-where
-    S: Send + Sync,
-{
-    type Rejection = http::StatusCode;
-
-    async fn from_request_parts(
-        parts: &mut http::request::Parts,
-        _state: &S,
-    ) -> std::result::Result<Self, Self::Rejection> {
-        let mut remote_addr = match parts.extensions.get::<ConnectInfo<SocketAddr>>() {
-            Some(ConnectInfo(addr)) => addr.clone(),
-            None => return Err(http::StatusCode::BAD_REQUEST),
-        };
-
-        for header in [
-            "x-client-ip",
-            "x-forwarded-for",
-            "x-real-ip",
-            "cf-connecting-ip",
-        ] {
-            if let Some(value) = parts.headers.get(header) {
-                if let Ok(ip) = value.to_str() {
-                    // Handle comma-separated IPs (e.g. X-Forwarded-For can have multiple)
-                    let first_ip = ip.split(',').next().unwrap_or(ip).trim();
-                    remote_addr.set_ip(IpAddr::V4(first_ip.parse().unwrap()));
-                    break;
-                }
-            }
-        }
-        Ok(ClientAddr(remote_addr))
-    }
-}
-
-impl fmt::Display for ClientAddr {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
-async fn serve_index() -> impl IntoResponse {
+async fn serve_index() -> Html<&'static str> {
     Html(include_str!("../assets/index.html"))
 }
 
 fn create_http_app(state: AppState) -> Router {
     Router::new()
         .route("/", get(serve_index))
-        .route("/ws", get(websocket_handler))
         .with_state(state)
         .layer(ServiceBuilder::new().layer(CorsLayer::permissive()))
-}
-
-async fn websocket_handler(
-    client_addr: ClientAddr,
-    ws: WebSocketUpgrade,
-    State(state): State<AppState>,
-) -> impl IntoResponse {
-    ws.protocols(["sip"])
-        .on_upgrade(|socket| handle_websocket(client_addr, socket, state))
-}
-
-async fn handle_websocket(client_addr: ClientAddr, socket: WebSocket, _state: AppState) {
-    let (ws_sink, mut ws_read) = socket.split();
-    let ws_sink = Arc::new(Mutex::new(ws_sink));
-
-    // Create a channel pair for bidirectional communication
-    let (from_ws_tx, from_ws_rx) = mpsc::unbounded_channel();
-    let (to_ws_tx, mut to_ws_rx) = mpsc::unbounded_channel();
-    let transport_type = rsip::transport::Transport::Ws;
-    // Create a unique SIP address for this WebSocket connection
-    let local_addr = SipAddr {
-        r#type: Some(transport_type),
-        addr: client_addr.0.into(),
-    };
-    let ws_token = CancellationToken::new();
-    // Create the ChannelConnection
-    let connection = match ChannelConnection::create_connection(
-        from_ws_rx,
-        to_ws_tx,
-        local_addr.clone(),
-        Some(ws_token),
-    )
-    .await
-    {
-        Ok(conn) => conn,
-        Err(e) => {
-            warn!("Failed to create channel connection: {:?}", e);
-            return;
-        }
-    };
-
-    let sip_connection = SipConnection::Channel(connection.clone());
-    info!("Created WebSocket channel connection: {}", local_addr);
-    _state
-        .inner
-        .endpoint_ref
-        .transport_layer
-        .add_connection(sip_connection.clone());
-
-    // Use select! instead of spawning multiple tasks
-    loop {
-        select! {
-            // Handle WebSocket -> Transport messages
-            message = ws_read.next() => {
-                match message {
-                    Some(Ok(Message::Text(text))) => match SipMessage::try_from(text.as_str()) {
-                        Ok(sip_msg) => {
-                            info!(
-                                "WebSocket received SIP message: {}",
-                                sip_msg.to_string().lines().next().unwrap_or("")
-                            );
-                            let msg = match SipConnection::update_msg_received(
-                                sip_msg,
-                                client_addr.0.into(),
-                                transport_type,
-                            ) {
-                                Ok(msg) => msg,
-                                Err(e) => {
-                                    warn!("Error updating SIP via: {:?}", e);
-                                    continue;
-                                }
-                            };
-                            if let Err(e) = from_ws_tx.send(TransportEvent::Incoming(
-                                msg,
-                                sip_connection.clone(),
-                                local_addr.clone(),
-                            )) {
-                                warn!("Error forwarding message to transport: {:?}", e);
-                                break;
-                            }
-                        }
-                        Err(e) => {
-                            warn!("Error parsing SIP message from WebSocket: {}", e);
-                        }
-                    },
-                    Some(Ok(Message::Binary(bin))) => match SipMessage::try_from(bin) {
-                        Ok(sip_msg) => {
-                            info!(
-                                "WebSocket received binary SIP message: {}",
-                                sip_msg.to_string().lines().next().unwrap_or("")
-                            );
-                            if let Err(e) = from_ws_tx.send(TransportEvent::Incoming(
-                                sip_msg,
-                                sip_connection.clone(),
-                                local_addr.clone(),
-                            )) {
-                                warn!("Error forwarding binary message to transport: {:?}", e);
-                                break;
-                            }
-                        }
-                        Err(e) => {
-                            warn!("Error parsing binary SIP message from WebSocket: {}", e);
-                        }
-                    },
-                    Some(Ok(Message::Close(_))) => {
-                        info!("WebSocket connection closed by client");
-                        break;
-                    }
-                    Some(Ok(Message::Ping(data))) => {
-                        let mut sink = ws_sink.lock().await;
-                        if let Err(e) = sink.send(Message::Pong(data)).await {
-                            warn!("Error sending pong response: {}", e);
-                            break;
-                        }
-                    }
-                    Some(Ok(Message::Pong(_))) => {
-                        // Just acknowledge the pong
-                    }
-                    Some(Err(e)) => {
-                        warn!("WebSocket error: {}", e);
-                        break;
-                    }
-                    None => {
-                        info!("WebSocket stream ended");
-                        break;
-                    }
-                }
-            }
-
-            // Handle Transport -> WebSocket messages
-            event = to_ws_rx.recv() => {
-                match event {
-                    Some(TransportEvent::Incoming(sip_msg, _, _)) => {
-                        let message_text = sip_msg.to_string();
-                        info!(
-                            "Forwarding message to WebSocket: {}",
-                            message_text.lines().next().unwrap_or("")
-                        );
-                        let mut sink = ws_sink.lock().await;
-                        if let Err(e) = sink.send(Message::Text(message_text.into())).await {
-                            warn!("Error sending message to WebSocket: {}", e);
-                            break;
-                        }
-                    }
-                    Some(TransportEvent::New(_)) => {
-                        // Handle new connection events if needed
-                    }
-                    Some(TransportEvent::Closed(_)) => {
-                        info!("Transport connection closed");
-                        break;
-                    }
-                    None => {
-                        info!("Transport channel closed");
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    info!("WebSocket connection handler exiting");
 }
 
 #[cfg(test)]
@@ -880,8 +619,6 @@ mod tests {
             "5060",
             "--tcp-port",
             "5060",
-            "--ws-port",
-            "8080",
             "--http-port",
             "8000",
         ])
@@ -889,7 +626,6 @@ mod tests {
 
         assert_eq!(args.port, 5060);
         assert_eq!(args.tcp_port, Some(5060));
-        assert_eq!(args.ws_port, Some(8080));
         assert_eq!(args.http_port, Some(8000));
     }
 
@@ -922,15 +658,15 @@ mod tests {
 
         let _ = tracing_subscriber::fmt::try_init();
 
-        // Create channel pair like in handle_websocket
+        // Create a channel pair for bidirectional communication
         let (to_transport_tx, to_transport_rx) = mpsc::unbounded_channel();
         let (from_transport_tx, mut from_transport_rx) = mpsc::unbounded_channel();
 
         // Create SIP address
         let local_addr = SipAddr {
-            r#type: Some(rsip::transport::Transport::Ws),
+            r#type: Some(rsip::transport::Transport::Tcp),
             addr: rsip::HostWithPort {
-                host: rsip::Host::Domain("test-websocket".to_string().into()),
+                host: rsip::Host::Domain("test-transport".to_string().into()),
                 port: Some(8080.into()),
             },
         };

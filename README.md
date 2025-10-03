@@ -7,7 +7,7 @@ A RFC 3261 compliant SIP stack written in Rust. The goal of this project is to p
 ## Features
 
 - **RFC 3261 Compliant**: Full compliance with SIP specification
-- **Multiple Transport Support**: UDP, TCP, TLS, WebSocket
+- **Multiple Transport Support**: UDP and TCP
 - **Transaction Layer**: Complete SIP transaction state machine
 - **Dialog Layer**: SIP dialog management
 - **Digest Authentication**: Built-in authentication support
@@ -18,12 +18,14 @@ A RFC 3261 compliant SIP stack written in Rust. The goal of this project is to p
 - [x] Transport support
   - [x] UDP
   - [x] TCP
-  - [x] TLS
-  - [x] WebSocket
 - [x] Digest Authentication
 - [x] Transaction Layer
 - [x] Dialog Layer
-- [ ] WASM target
+
+## Cargo Features
+
+- `dns` *(default)*: enables DNS SRV/NAPTR resolution via `rsip-dns`. Disable default
+  features to build without the dependency: `cargo build --no-default-features`.
 
 ## Use Cases
 
@@ -96,10 +98,7 @@ connection.send_raw(sip_message.as_bytes(), &target_addr).await?;
 ### 2. Using New Listener APIs
 
 ```rust
-use rsipstack::transport::{
-    TcpListenerConnection, WebSocketListenerConnection, TlsListenerConnection,
-    TlsConfig, SipAddr
-};
+use rsipstack::transport::{TcpListenerConnection, SipAddr};
 use tokio_util::sync::CancellationToken;
 use tokio::sync::mpsc::unbounded_channel;
 
@@ -113,21 +112,6 @@ let (sender, mut receiver) = unbounded_channel();
 
 // Start TCP listener
 tcp_listener.serve_listener(cancel_token.clone(), sender.clone()).await?;
-
-// Create WebSocket listener
-let ws_local_addr = SipAddr::new(rsip::transport::Transport::Ws, socket_addr.into());
-let ws_listener = WebSocketListenerConnection::new(ws_local_addr, None, false).await?;
-ws_listener.serve_listener(cancel_token.clone(), sender.clone()).await?;
-
-// Create TLS listener with configuration
-let tls_config = TlsConfig {
-    cert: Some(cert_pem_bytes),
-    key: Some(key_pem_bytes),
-    ..Default::default()
-};
-let tls_local_addr = SipAddr::new(rsip::transport::Transport::Tls, socket_addr.into());
-let tls_listener = TlsListenerConnection::new(tls_local_addr, None, tls_config).await?;
-tls_listener.serve_listener(cancel_token.clone(), sender.clone()).await?;
 
 // Handle incoming connections
 while let Some(event) = receiver.recv().await {

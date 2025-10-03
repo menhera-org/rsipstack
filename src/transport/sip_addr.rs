@@ -17,9 +17,8 @@ use std::{fmt, hash::Hash, net::SocketAddr};
 ///
 /// * `UDP` - User Datagram Protocol (unreliable)
 /// * `TCP` - Transmission Control Protocol (reliable)
-/// * `TLS` - Transport Layer Security over TCP (reliable, encrypted)
-/// * `WS` - WebSocket (reliable)
-/// * `WSS` - WebSocket Secure (reliable, encrypted)
+/// * Additional transports (e.g., TLS or WebSocket variants) may appear when parsing
+///   external data but are not handled directly by this stack.
 ///
 /// # Examples
 ///

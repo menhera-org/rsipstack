@@ -305,7 +305,6 @@ pub fn make_tag() -> rsip::param::Tag {
     random_text(TO_TAG_LEN).into()
 }
 
-#[cfg(not(target_family = "wasm"))]
 pub fn random_text(count: usize) -> String {
     use rand::Rng;
     rand::rng()
@@ -313,19 +312,4 @@ pub fn random_text(count: usize) -> String {
         .take(count)
         .map(char::from)
         .collect::<String>()
-}
-
-#[cfg(target_family = "wasm")]
-pub fn random_text(count: usize) -> String {
-    (0..count)
-        .map(|_| {
-            let r = js_sys::Math::random();
-            let c = (r * 16.0) as u8;
-            if c < 10 {
-                (c + 48) as char
-            } else {
-                (c + 87) as char
-            }
-        })
-        .collect()
 }

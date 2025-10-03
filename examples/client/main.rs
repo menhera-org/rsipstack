@@ -1,7 +1,4 @@
 use clap::Parser;
-use play_file::{build_rtp_conn, play_audio_file};
-use rsip::prelude::HeadersExt;
-use rsip::typed::MediaType;
 use ftth_rsipstack::dialog::dialog::{Dialog, DialogState, DialogStateReceiver, DialogStateSender};
 use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
 use ftth_rsipstack::dialog::invitation::InviteOption;
@@ -14,6 +11,9 @@ use ftth_rsipstack::{
     transport::{udp::UdpConnection, TransportLayer},
     EndpointBuilder, Error,
 };
+use play_file::{build_rtp_conn, play_audio_file};
+use rsip::prelude::HeadersExt;
+use rsip::typed::MediaType;
 use std::net::IpAddr;
 use std::{env, sync::Arc, time::Duration};
 use tokio::sync::mpsc::unbounded_channel;
@@ -293,7 +293,9 @@ async fn process_registration(
         let resp = registration.register(sip_server.clone(), None).await?;
         debug!("received response: {}", resp.to_string());
         if resp.status_code != rsip::StatusCode::OK {
-            return Err(ftth_rsipstack::Error::Error("Failed to register".to_string()));
+            return Err(ftth_rsipstack::Error::Error(
+                "Failed to register".to_string(),
+            ));
         }
         sleep(Duration::from_secs(registration.expires().max(50) as u64)).await;
     }
