@@ -22,11 +22,6 @@ A RFC 3261 compliant SIP stack written in Rust. The goal of this project is to p
 - [x] Transaction Layer
 - [x] Dialog Layer
 
-## Cargo Features
-
-- `dns` *(default)*: enables DNS SRV/NAPTR resolution via `rsip-dns`. Disable default
-  features to build without the dependency: `cargo build --no-default-features`.
-
 ## Use Cases
 
 This SIP stack can be used in various scenarios, including but not limited to:

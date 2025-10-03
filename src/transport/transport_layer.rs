@@ -2,12 +2,6 @@ use super::{connection::TransportSender, sip_addr::SipAddr, tcp::TcpConnection, 
 use crate::transaction::key::TransactionKey;
 use crate::transport::connection::TransportReceiver;
 use crate::{transport::TransportEvent, Result};
-#[cfg(feature = "dns")]
-use rsip_dns::trust_dns_resolver::TokioAsyncResolver;
-#[cfg(feature = "dns")]
-use rsip_dns::ResolvableExt;
-#[cfg(feature = "dns")]
-use std::net::SocketAddr;
 use std::sync::{Mutex, RwLock};
 use std::{collections::HashMap, sync::Arc};
 use tokio::select;
@@ -154,50 +148,7 @@ impl TransportLayerInner {
         outbound: Option<&SipAddr>,
         key: Option<&TransactionKey>,
     ) -> Result<(SipConnection, SipAddr)> {
-        let target_base = outbound.cloned().unwrap_or_else(|| destination.clone());
-
-        #[cfg(feature = "dns")]
-        let mut target = target_base;
-
-        #[cfg(not(feature = "dns"))]
-        let target = target_base;
-
-        #[cfg(feature = "dns")]
-        {
-            if matches!(target.addr.host, rsip::Host::Domain(_)) {
-                let uri = rsip::uri::Uri {
-                    scheme: Some(rsip::Scheme::Sip),
-                    host_with_port: target.addr.clone(),
-                    ..Default::default()
-                };
-                let resolver = TokioAsyncResolver::tokio(Default::default(), Default::default())
-                    .map_err(|e| crate::Error::DnsResolutionError(e.to_string()))?;
-                let context = rsip_dns::Context::initialize_from(
-                    uri,
-                    rsip_dns::AsyncTrustDnsClient::new(resolver),
-                    rsip_dns::SupportedTransports::any(),
-                )?;
-
-                let mut lookup = rsip_dns::Lookup::from(context);
-                match lookup.resolve_next().await {
-                    Some(result) => {
-                        target = SipAddr {
-                            r#type: Some(result.transport),
-                            addr: rsip::HostWithPort::from(SocketAddr::new(
-                                result.ip_addr,
-                                u16::from(result.port),
-                            )),
-                        };
-                    }
-                    None => {
-                        return Err(crate::Error::DnsResolutionError(format!(
-                            "DNS resolution error: {}",
-                            destination
-                        )));
-                    }
-                }
-            }
-        }
+        let target = outbound.cloned().unwrap_or_else(|| destination.clone());
 
         debug!(?key, "lookup target: {} -> {}", destination, target);
         match self.connections.read() {
@@ -313,11 +264,6 @@ mod tests {
         transport::{udp::UdpConnection, SipAddr},
         Result,
     };
-    #[cfg(feature = "dns")]
-    use rsip::{Host, Transport};
-    #[cfg(feature = "dns")]
-    use rsip_dns::{trust_dns_resolver::TokioAsyncResolver, ResolvableExt};
-
     #[tokio::test]
     async fn test_lookup() -> Result<()> {
         let mut tl = super::TransportLayer::new(tokio_util::sync::CancellationToken::new());
@@ -356,47 +302,6 @@ mod tests {
         // must return the outbound transport
         let (target, _) = tl.lookup(&first_uri, None).await?;
         assert_eq!(target.get_addr(), &outbound);
-        Ok(())
-    }
-
-    #[cfg(feature = "dns")]
-    #[tokio::test]
-    async fn test_rsip_dns_lookup() -> Result<()> {
-        let check_list = vec![
-            (
-                "sip:bob@127.0.0.1:5061;transport=udp",
-                ("bob", "127.0.0.1", 5061, Transport::Udp),
-            ),
-            (
-                "sip:bob@127.0.0.1:5062;transport=tcp",
-                ("bob", "127.0.0.1", 5062, Transport::Tcp),
-            ),
-        ];
-        for item in check_list {
-            let uri = rsip::uri::Uri::try_from(item.0)?;
-            let context = rsip_dns::Context::initialize_from(
-                uri.clone(),
-                rsip_dns::AsyncTrustDnsClient::new(
-                    TokioAsyncResolver::tokio(Default::default(), Default::default()).unwrap(),
-                ),
-                rsip_dns::SupportedTransports::any(),
-            )?;
-
-            let mut lookup = rsip_dns::Lookup::from(context);
-            let mut target = lookup.resolve_next().await.unwrap();
-            match uri.host_with_port.host {
-                Host::IpAddr(_) => {
-                    if let Some(port) = uri.host_with_port.port {
-                        target.port = port;
-                    }
-                }
-                _ => {}
-            }
-            assert_eq!(uri.user().unwrap(), item.1 .0);
-            assert_eq!(target.transport, item.1 .3);
-            assert_eq!(target.ip_addr.to_string(), item.1 .1);
-            assert_eq!(target.port, item.1 .2.into());
-        }
         Ok(())
     }
 

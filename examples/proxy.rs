@@ -10,15 +10,12 @@ use ftth_rsipstack::transaction::TransactionReceiver;
 use ftth_rsipstack::transport::tcp_listener::TcpListenerConnection;
 use ftth_rsipstack::transport::udp::UdpConnection;
 use ftth_rsipstack::transport::SipAddr;
-use ftth_rsipstack::transport::{SipConnection, TransportEvent};
 use ftth_rsipstack::{header_pop, Error, Result};
 use ftth_rsipstack::{transport::TransportLayer, EndpointBuilder};
 use get_if_addrs::get_if_addrs;
 use rsip::headers::UntypedHeader;
 use rsip::prelude::{HeadersExt, ToTypedHeader};
-use rsip::SipMessage;
 use std::collections::{HashMap, HashSet};
-use std::net::IpAddr;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::{env, vec};
@@ -61,6 +58,7 @@ struct User {
 struct AppStateInner {
     users: Mutex<HashMap<String, User>>,
     sessions: Mutex<HashSet<DialogId>>,
+    #[allow(dead_code)]
     endpoint_ref: EndpointInnerRef,
 }
 #[derive(Clone)]
