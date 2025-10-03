@@ -1,13 +1,13 @@
 use clap::Parser;
 use futures::future::{self, Future};
-use rsipstack::dialog::dialog::{
+use ftth_rsipstack::dialog::dialog::{
     Dialog, DialogState, DialogStateReceiver, DialogStateSender, TerminatedReason,
 };
-use rsipstack::dialog::dialog_layer::DialogLayer;
-use rsipstack::dialog::invitation::InviteOption;
-use rsipstack::dialog::DialogId;
-use rsipstack::Result;
-use rsipstack::{
+use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+use ftth_rsipstack::dialog::invitation::InviteOption;
+use ftth_rsipstack::dialog::DialogId;
+use ftth_rsipstack::Result;
+use ftth_rsipstack::{
     dialog::authenticate::Credential,
     transaction::TransactionReceiver,
     transport::{udp::UdpConnection, TransportLayer},

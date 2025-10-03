@@ -1,13 +1,13 @@
 [package]
-name = "rsipstack"
-version = "0.2.65"
+name = "ftth-rsipstack"
+version = "1.0.0"
 edition = "2021"
-description = "SIP Stack Rust library for building SIP applications"
+description = "SIP Stack Rust library for building SIP applications (without TLS and Websocket)"
 license = "MIT"
-repository = "https://github.com/restsend/rsipstack"
+repository = "https://github.com/menhera-org/rsipstack"
 readme = "README.md"
 keywords = ["sip", "voip", "telephony", "sipstack"]
-authors = ["kui<kui@fourz.cn>"]
+authors = ["kui<kui@fourz.cn>", "Menhera.org Contributors"]
 categories = ["network-programming", "multimedia"]
 
 

@@ -1,7 +1,7 @@
 use crate::{get_first_non_loopback_interface, MediaSessionOption};
-use rsipstack::transport::udp::UdpConnection;
-use rsipstack::Result;
-use rsipstack::{transport::SipAddr, Error};
+use ftth_rsipstack::transport::udp::UdpConnection;
+use ftth_rsipstack::Result;
+use ftth_rsipstack::{transport::SipAddr, Error};
 use rtp_rs::RtpPacketBuilder;
 use std::net::SocketAddr;
 use std::time::Duration;

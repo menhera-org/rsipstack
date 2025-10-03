@@ -15,21 +15,21 @@ use get_if_addrs::get_if_addrs;
 use rsip::headers::UntypedHeader;
 use rsip::prelude::{HeadersExt, ToTypedHeader};
 use rsip::SipMessage;
-use rsipstack::dialog::DialogId;
-use rsipstack::rsip_ext::{extract_uri_from_contact, RsipHeadersExt};
-use rsipstack::transaction::endpoint::EndpointInnerRef;
-use rsipstack::transaction::key::{TransactionKey, TransactionRole};
-use rsipstack::transaction::transaction::Transaction;
-use rsipstack::transaction::TransactionReceiver;
-use rsipstack::transport::channel::ChannelConnection;
-use rsipstack::transport::tcp_listener::TcpListenerConnection;
-use rsipstack::transport::udp::UdpConnection;
+use ftth_rsipstack::dialog::DialogId;
+use ftth_rsipstack::rsip_ext::{extract_uri_from_contact, RsipHeadersExt};
+use ftth_rsipstack::transaction::endpoint::EndpointInnerRef;
+use ftth_rsipstack::transaction::key::{TransactionKey, TransactionRole};
+use ftth_rsipstack::transaction::transaction::Transaction;
+use ftth_rsipstack::transaction::TransactionReceiver;
+use ftth_rsipstack::transport::channel::ChannelConnection;
+use ftth_rsipstack::transport::tcp_listener::TcpListenerConnection;
+use ftth_rsipstack::transport::udp::UdpConnection;
 #[cfg(feature = "websocket")]
-use rsipstack::transport::websocket::WebSocketListenerConnection;
-use rsipstack::transport::SipAddr;
-use rsipstack::transport::{SipConnection, TransportEvent};
-use rsipstack::{header_pop, Error, Result};
-use rsipstack::{transport::TransportLayer, EndpointBuilder};
+use ftth_rsipstack::transport::websocket::WebSocketListenerConnection;
+use ftth_rsipstack::transport::SipAddr;
+use ftth_rsipstack::transport::{SipConnection, TransportEvent};
+use ftth_rsipstack::{header_pop, Error, Result};
+use ftth_rsipstack::{transport::TransportLayer, EndpointBuilder};
 use std::collections::{HashMap, HashSet};
 use std::fmt;
 use std::fmt::Formatter;
@@ -765,8 +765,8 @@ async fn handle_websocket(client_addr: ClientAddr, socket: WebSocket, _state: Ap
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rsipstack::transport::udp::UdpConnection;
-    use rsipstack::{transport::TransportLayer, EndpointBuilder};
+    use ftth_rsipstack::transport::udp::UdpConnection;
+    use ftth_rsipstack::{transport::TransportLayer, EndpointBuilder};
     use std::sync::Arc;
     use std::time::Duration;
     use tokio_util::sync::CancellationToken;
@@ -915,9 +915,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_channel_connection_creation() {
-        use rsipstack::transport::channel::ChannelConnection;
-        use rsipstack::transport::SipAddr;
-        use rsipstack::transport::{SipConnection, TransportEvent};
+        use ftth_rsipstack::transport::channel::ChannelConnection;
+        use ftth_rsipstack::transport::SipAddr;
+        use ftth_rsipstack::transport::{SipConnection, TransportEvent};
         use tokio::sync::mpsc;
 
         let _ = tracing_subscriber::fmt::try_init();

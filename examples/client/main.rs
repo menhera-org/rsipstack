@@ -2,13 +2,13 @@ use clap::Parser;
 use play_file::{build_rtp_conn, play_audio_file};
 use rsip::prelude::HeadersExt;
 use rsip::typed::MediaType;
-use rsipstack::dialog::dialog::{Dialog, DialogState, DialogStateReceiver, DialogStateSender};
-use rsipstack::dialog::dialog_layer::DialogLayer;
-use rsipstack::dialog::invitation::InviteOption;
-use rsipstack::dialog::server_dialog::ServerInviteDialog;
-use rsipstack::transaction::endpoint::EndpointInnerRef;
-use rsipstack::Result;
-use rsipstack::{
+use ftth_rsipstack::dialog::dialog::{Dialog, DialogState, DialogStateReceiver, DialogStateSender};
+use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+use ftth_rsipstack::dialog::invitation::InviteOption;
+use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+use ftth_rsipstack::transaction::endpoint::EndpointInnerRef;
+use ftth_rsipstack::Result;
+use ftth_rsipstack::{
     dialog::{authenticate::Credential, registration::Registration},
     transaction::TransactionReceiver,
     transport::{udp::UdpConnection, TransportLayer},
@@ -133,7 +133,7 @@ pub fn get_first_non_loopback_interface() -> Result<IpAddr> {
 }
 // A sip client example, that sends a REGISTER request to a sip server.
 #[tokio::main]
-async fn main() -> rsipstack::Result<()> {
+async fn main() -> ftth_rsipstack::Result<()> {
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::DEBUG)
         .with_file(true)
@@ -293,7 +293,7 @@ async fn process_registration(
         let resp = registration.register(sip_server.clone(), None).await?;
         debug!("received response: {}", resp.to_string());
         if resp.status_code != rsip::StatusCode::OK {
-            return Err(rsipstack::Error::Error("Failed to register".to_string()));
+            return Err(ftth_rsipstack::Error::Error("Failed to register".to_string()));
         }
         sleep(Duration::from_secs(registration.expires().max(50) as u64)).await;
     }
