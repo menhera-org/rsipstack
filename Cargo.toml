@@ -1,6 +1,6 @@
 [package]
 name = "ftth-rsipstack"
-version = "2.1.0"
+version = "3.0.0"
 edition = "2021"
 description = "SIP Stack Rust library for building SIP applications (without TLS and Websocket)"
 license = "MIT"
