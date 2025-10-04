@@ -1,4 +1,5 @@
 use crate::transport::{SipAddr, SipConnection};
+use crate::rsip;
 use rsip::{headers::*, prelude::HeadersExt, HostWithPort, SipMessage};
 
 #[test]

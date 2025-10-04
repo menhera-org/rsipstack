@@ -1,4 +1,4 @@
-# rsipstack - A SIP Stack written in Rust
+# ftth-rsipstack - A SIP Stack written in Rust
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/restsend/rsipstack)
 
@@ -93,9 +93,11 @@ connection.send_raw(sip_message.as_bytes(), &target_addr).await?;
 ### 2. Using New Listener APIs
 
 ```rust
+use ftth_rsipstack as rsipstack;
 use rsipstack::transport::{TcpListenerConnection, SipAddr};
 use tokio_util::sync::CancellationToken;
 use tokio::sync::mpsc::unbounded_channel;
+use ftth_rsip as rsip;
 
 // Create TCP listener
 let socket_addr: std::net::SocketAddr = "127.0.0.1:5060".parse()?;

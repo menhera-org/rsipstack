@@ -1,6 +1,6 @@
 [package]
 name = "ftth-rsipstack"
-version = "2.0.0"
+version = "2.1.0"
 edition = "2021"
 description = "SIP Stack Rust library for building SIP applications (without TLS and Websocket)"
 license = "MIT"
@@ -33,6 +33,7 @@ futures-util = "0.3.31"
 clap = { version = "4.5.47", features = ["derive"] }
 http = "1.3.1"
 tokio = { version = "1.47.1", features = ["full"] }
+ftth-rsip = "0.4.1"
 
 [dev-dependencies]
 dotenv = "0.15"

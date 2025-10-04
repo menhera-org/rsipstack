@@ -4,6 +4,8 @@ use std::time::Duration;
 use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
 use transaction::Transaction;
 
+use crate::rsip;
+
 pub mod endpoint;
 pub mod key;
 pub mod message;

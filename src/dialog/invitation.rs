@@ -4,6 +4,7 @@ use super::{
     dialog::{DialogInner, DialogStateSender},
     dialog_layer::DialogLayer,
 };
+use crate::rsip;
 use crate::{
     dialog::{dialog::Dialog, dialog_layer::DialogLayerInnerRef, DialogId},
     transaction::{

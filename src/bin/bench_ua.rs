@@ -1,4 +1,5 @@
 use clap::Parser;
+use ftth_rsipstack::rsip;
 use ftth_rsipstack::dialog::dialog::{
     Dialog, DialogState, DialogStateReceiver, DialogStateSender, TerminatedReason,
 };

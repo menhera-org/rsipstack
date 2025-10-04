@@ -2,6 +2,7 @@ use super::dialog::{Dialog, DialogInnerRef, DialogState, TerminatedReason};
 use super::DialogId;
 use crate::dialog::dialog::DialogInner;
 use crate::transport::SipConnection;
+use crate::rsip;
 use crate::{
     transaction::transaction::{Transaction, TransactionEvent},
     Result,

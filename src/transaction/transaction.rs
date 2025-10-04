@@ -5,6 +5,7 @@ use crate::dialog::DialogId;
 use crate::transaction::make_tag;
 use crate::transport::SipAddr;
 use crate::{Error, Result};
+use crate::rsip;
 use rsip::headers::ContentLength;
 use rsip::message::HasHeaders;
 use rsip::prelude::HeadersExt;

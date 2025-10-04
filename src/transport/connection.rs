@@ -2,6 +2,7 @@ use super::{sip_addr::SipAddr, stream::StreamConnection, tcp::TcpConnection, udp
 use crate::transport::channel::ChannelConnection;
 use crate::transport::tcp_listener::TcpListenerConnection;
 use crate::Result;
+use crate::rsip;
 use get_if_addrs::IfAddr;
 use rsip::{
     prelude::{HeadersExt, ToTypedHeader},

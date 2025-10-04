@@ -8,6 +8,7 @@ use crate::transaction::{
     key::{TransactionKey, TransactionRole},
     transaction::Transaction,
 };
+use crate::rsip;
 use crate::transport::{udp::UdpConnection, TransportLayer};
 use rsip::{headers::*, Request};
 use tokio::sync::mpsc::unbounded_channel;

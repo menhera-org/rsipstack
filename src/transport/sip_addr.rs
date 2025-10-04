@@ -1,4 +1,5 @@
 use crate::Result;
+use crate::rsip;
 use rsip::{host_with_port, HostWithPort};
 use std::{fmt, hash::Hash, net::SocketAddr};
 

@@ -206,6 +206,7 @@
 //! * SIP proxy server
 //! * Load testing tools
 
+pub use ftth_rsip as rsip;
 pub type Result<T> = std::result::Result<T, crate::error::Error>;
 pub use crate::error::Error;
 pub mod dialog;

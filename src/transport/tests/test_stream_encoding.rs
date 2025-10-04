@@ -3,6 +3,7 @@ use crate::transport::{
     stream::SipCodec,
 };
 use bytes::BytesMut;
+use crate::rsip;
 use rsip::{
     prelude::{HeadersExt, UntypedHeader},
     SipMessage,

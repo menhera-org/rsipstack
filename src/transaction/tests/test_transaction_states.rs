@@ -9,6 +9,7 @@ use crate::transaction::{
     transaction::Transaction,
     TransactionState, TransactionType,
 };
+use crate::rsip;
 use rsip::headers::*;
 
 /// Test helper to create a mock request

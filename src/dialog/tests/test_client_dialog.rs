@@ -7,6 +7,7 @@ use crate::dialog::{
     dialog::{DialogInner, DialogState, TerminatedReason},
     DialogId,
 };
+use crate::rsip;
 use crate::transaction::{endpoint::EndpointBuilder, key::TransactionRole};
 use crate::transport::TransportLayer;
 use rsip::{headers::*, Request, Response, StatusCode, Uri};

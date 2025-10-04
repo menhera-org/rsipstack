@@ -3,6 +3,8 @@ use crate::{
     Result,
 };
 
+use crate::rsip;
+
 /// Test new TcpListenerConnection API
 #[tokio::test]
 async fn test_tcp_listener_connection_api() -> Result<()> {

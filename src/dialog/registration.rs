@@ -2,6 +2,7 @@ use super::{
     authenticate::{handle_client_authenticate, Credential},
     DialogId,
 };
+use crate::rsip;
 use crate::{
     rsip_ext::RsipResponseExt,
     transaction::{
