@@ -37,7 +37,7 @@
 //! ### Creating a SIP Endpoint
 //!
 //! ```rust,no_run
-//! use rsipstack::EndpointBuilder;
+//! use ftth_rsipstack::EndpointBuilder;
 //! use tokio_util::sync::CancellationToken;
 //!
 //! #[tokio::main]
@@ -70,12 +70,12 @@
 //! ### Sending SIP Requests
 //!
 //! ```rust,no_run
-//! use rsipstack::dialog::dialog_layer::DialogLayer;
-//! use rsipstack::dialog::invitation::InviteOption;
-//! use rsipstack::transaction::endpoint::EndpointInner;
+//! use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+//! use ftth_rsipstack::dialog::invitation::InviteOption;
+//! use ftth_rsipstack::transaction::endpoint::EndpointInner;
 //! use std::sync::Arc;
 //!
-//! # async fn example() -> rsipstack::Result<()> {
+//! # async fn example() -> ftth_rsipstack::Result<()> {
 //! # let endpoint: Arc<EndpointInner> = todo!();
 //! # let state_sender = todo!();
 //! # let sdp_body = vec![];
@@ -130,7 +130,7 @@
 //! The stack uses a comprehensive error type that covers all layers:
 //!
 //! ```rust
-//! use rsipstack::{Result, Error};
+//! use ftth_rsipstack::{Result, Error};
 //!
 //! fn handle_sip_error(error: Error) {
 //!     match error {
@@ -155,11 +155,11 @@
 //! ### Basic UDP Server
 //!
 //! ```rust,no_run
-//! use rsipstack::EndpointBuilder;
-//! use rsipstack::transport::{TransportLayer, udp::UdpConnection};
+//! use ftth_rsipstack::EndpointBuilder;
+//! use ftth_rsipstack::transport::{TransportLayer, udp::UdpConnection};
 //! use tokio_util::sync::CancellationToken;
 //!
-//! # async fn example() -> rsipstack::Result<()> {
+//! # async fn example() -> ftth_rsipstack::Result<()> {
 //! # let cancel_token = CancellationToken::new();
 //! let transport_layer = TransportLayer::new(cancel_token.child_token());
 //! let udp_conn = UdpConnection::create_connection("0.0.0.0:5060".parse()?, None, Some(cancel_token.child_token())).await?;

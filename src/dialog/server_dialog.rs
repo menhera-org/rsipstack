@@ -42,8 +42,8 @@ use tracing::{debug, info, trace, warn};
 /// ## Basic Call Handling
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// # let dialog: ServerInviteDialog = todo!(); // Dialog is typically created by DialogLayer
 /// # let answer_sdp = vec![];
 /// // After receiving INVITE:
@@ -58,8 +58,8 @@ use tracing::{debug, info, trace, warn};
 /// ```
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let dialog: ServerInviteDialog = todo!();
 /// // End an established call
 /// dialog.bye().await?;
@@ -70,8 +70,8 @@ use tracing::{debug, info, trace, warn};
 /// ## Session Modification
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let dialog: ServerInviteDialog = todo!();
 /// # let new_sdp = vec![];
 /// // Send re-INVITE to modify session
@@ -162,8 +162,8 @@ impl ServerInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-    /// # fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+    /// # fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ServerInviteDialog = todo!();
     /// // Accept with SDP answer
     /// let answer_sdp = b"v=0\r\no=- 123 456 IN IP4 192.168.1.1\r\n...";
@@ -233,10 +233,10 @@ impl ServerInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-    /// # use rsipstack::transport::SipAddr;
+    /// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+    /// # use ftth_rsipstack::transport::SipAddr;
     /// # use std::net::{IpAddr, Ipv4Addr};
-    /// # fn example() -> rsipstack::Result<()> {
+    /// # fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ServerInviteDialog = todo!();
     /// # let local_addr: SipAddr = todo!();
     /// let public_addr = Some(rsip::HostWithPort {
@@ -294,8 +294,8 @@ impl ServerInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-    /// # fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+    /// # fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ServerInviteDialog = todo!();
     /// // Reject the incoming call
     /// dialog.reject(Some(rsip::StatusCode::BusyHere), Some("Busy here".into()))?;
@@ -342,8 +342,8 @@ impl ServerInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ServerInviteDialog = todo!();
     /// // End an established call
     /// dialog.bye().await?;
@@ -395,8 +395,8 @@ impl ServerInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ServerInviteDialog = todo!();
     /// let new_sdp = b"v=0\r\no=- 123 456 IN IP4 192.168.1.1\r\n...";
     /// let response = dialog.reinvite(None, Some(new_sdp.to_vec())).await?;
@@ -452,8 +452,8 @@ impl ServerInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ServerInviteDialog = todo!();
     /// # let sdp_body = vec![];
     /// let response = dialog.update(None, Some(sdp_body)).await?;
@@ -499,8 +499,8 @@ impl ServerInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::server_dialog::ServerInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::server_dialog::ServerInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ServerInviteDialog = todo!();
     /// // Send DTMF tone
     /// let dtmf_body = b"Signal=1\r\nDuration=100\r\n";

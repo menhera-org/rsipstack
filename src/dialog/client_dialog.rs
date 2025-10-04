@@ -50,8 +50,8 @@ use tracing::{info, trace};
 /// ## Basic Call Flow
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::client_dialog::ClientInviteDialog;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::client_dialog::ClientInviteDialog;
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let dialog: ClientInviteDialog = todo!(); // Dialog is typically created by DialogLayer.do_invite()
 /// # let new_sdp_body = vec![];
 /// # let info_body = vec![];
@@ -72,8 +72,8 @@ use tracing::{info, trace};
 /// ## Session Modification
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::client_dialog::ClientInviteDialog;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::client_dialog::ClientInviteDialog;
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let dialog: ClientInviteDialog = todo!();
 /// # let new_sdp = vec![];
 /// // Modify session with re-INVITE
@@ -146,8 +146,8 @@ impl ClientInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::client_dialog::ClientInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::client_dialog::ClientInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ClientInviteDialog = todo!();
     /// // End an established call
     /// dialog.bye().await?;
@@ -187,8 +187,8 @@ impl ClientInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::client_dialog::ClientInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::client_dialog::ClientInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ClientInviteDialog = todo!();
     /// // Cancel an outgoing call before it's answered
     /// dialog.cancel().await?;
@@ -239,8 +239,8 @@ impl ClientInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::client_dialog::ClientInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::client_dialog::ClientInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ClientInviteDialog = todo!();
     /// let new_sdp = b"v=0\r\no=- 123 456 IN IP4 192.168.1.1\r\n...";
     /// let response = dialog.reinvite(None, Some(new_sdp.to_vec())).await?;
@@ -292,8 +292,8 @@ impl ClientInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::client_dialog::ClientInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::client_dialog::ClientInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ClientInviteDialog = todo!();
     /// # let sdp_body = vec![];
     /// let response = dialog.update(None, Some(sdp_body)).await?;
@@ -335,8 +335,8 @@ impl ClientInviteDialog {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::client_dialog::ClientInviteDialog;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::client_dialog::ClientInviteDialog;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog: ClientInviteDialog = todo!();
     /// // Send DTMF tone
     /// let dtmf_body = b"Signal=1\r\nDuration=100\r\n";

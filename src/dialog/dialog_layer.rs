@@ -56,11 +56,11 @@ pub type DialogLayerInnerRef = Arc<DialogLayerInner>;
 /// ## Server-side Dialog Creation
 ///
 /// ```rust,no_run
-/// use rsipstack::dialog::dialog_layer::DialogLayer;
-/// use rsipstack::transaction::endpoint::EndpointInner;
+/// use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+/// use ftth_rsipstack::transaction::endpoint::EndpointInner;
 /// use std::sync::Arc;
 ///
-/// # fn example() -> rsipstack::Result<()> {
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// # let endpoint: Arc<EndpointInner> = todo!();
 /// # let transaction = todo!();
 /// # let state_sender = todo!();
@@ -86,8 +86,8 @@ pub type DialogLayerInnerRef = Arc<DialogLayerInner>;
 /// ## Dialog Lookup and Routing
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::dialog_layer::DialogLayer;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let dialog_layer: DialogLayer = todo!();
 /// # let request = todo!();
 /// # let transaction = todo!();
@@ -105,7 +105,7 @@ pub type DialogLayerInnerRef = Arc<DialogLayerInner>;
 /// ## Dialog Cleanup
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::dialog_layer::DialogLayer;
+/// # use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
 /// # fn example() {
 /// # let dialog_layer: DialogLayer = todo!();
 /// # let dialog_id = todo!();

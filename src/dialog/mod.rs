@@ -30,7 +30,7 @@ mod tests;
 /// # Examples
 ///
 /// ```rust
-/// use rsipstack::dialog::DialogId;
+/// use ftth_rsipstack::dialog::DialogId;
 ///
 /// let dialog_id = DialogId {
 ///     call_id: "1234567890@example.com".to_string(),

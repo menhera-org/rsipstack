@@ -48,10 +48,10 @@ use tracing::{debug, info};
 /// ## Basic Registration
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::registration::Registration;
-/// # use rsipstack::dialog::authenticate::Credential;
-/// # use rsipstack::transaction::endpoint::Endpoint;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::registration::Registration;
+/// # use ftth_rsipstack::dialog::authenticate::Credential;
+/// # use ftth_rsipstack::transaction::endpoint::Endpoint;
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let endpoint: Endpoint = todo!();
 /// let credential = Credential {
 ///     username: "alice".to_string(),
@@ -74,11 +74,11 @@ use tracing::{debug, info};
 /// ## Registration Loop
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::registration::Registration;
-/// # use rsipstack::dialog::authenticate::Credential;
-/// # use rsipstack::transaction::endpoint::Endpoint;
+/// # use ftth_rsipstack::dialog::registration::Registration;
+/// # use ftth_rsipstack::dialog::authenticate::Credential;
+/// # use ftth_rsipstack::transaction::endpoint::Endpoint;
 /// # use std::time::Duration;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let endpoint: Endpoint = todo!();
 /// # let credential: Credential = todo!();
 /// # let server = rsip::Uri::try_from("sip:sip.example.com").unwrap();
@@ -141,9 +141,9 @@ impl Registration {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::registration::Registration;
-    /// # use rsipstack::dialog::authenticate::Credential;
-    /// # use rsipstack::transaction::endpoint::Endpoint;
+    /// # use ftth_rsipstack::dialog::registration::Registration;
+    /// # use ftth_rsipstack::dialog::authenticate::Credential;
+    /// # use ftth_rsipstack::transaction::endpoint::Endpoint;
     /// # fn example() {
     /// # let endpoint: Endpoint = todo!();
     /// // Registration without authentication
@@ -187,7 +187,7 @@ impl Registration {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::registration::Registration;
+    /// # use ftth_rsipstack::dialog::registration::Registration;
     /// # async fn example() {
     /// # let registration: Registration = todo!();
     /// if let Some(public_address) = registration.discovered_public_address() {
@@ -215,7 +215,7 @@ impl Registration {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::registration::Registration;
+    /// # use ftth_rsipstack::dialog::registration::Registration;
     /// # use std::time::Duration;
     /// # async fn example() {
     /// # let registration: Registration = todo!();
@@ -272,9 +272,9 @@ impl Registration {
     /// ## Successful Registration
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::registration::Registration;
+    /// # use ftth_rsipstack::dialog::registration::Registration;
     /// # use rsip::prelude::HeadersExt;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let mut registration: Registration = todo!();
     /// let server = rsip::Uri::try_from("sip:sip.example.com").unwrap();
     /// let response = registration.register(server, None).await?;
@@ -301,8 +301,8 @@ impl Registration {
     /// ## Error Handling
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::registration::Registration;
-    /// # use rsipstack::Error;
+    /// # use ftth_rsipstack::dialog::registration::Registration;
+    /// # use ftth_rsipstack::Error;
     /// # async fn example() {
     /// # let mut registration: Registration = todo!();
     /// # let server = rsip::Uri::try_from("sip:sip.example.com").unwrap();
@@ -512,9 +512,9 @@ impl Registration {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::registration::Registration;
+    /// # use ftth_rsipstack::dialog::registration::Registration;
     /// # use std::net::{IpAddr, Ipv4Addr};
-    /// # use rsipstack::transport::SipAddr;
+    /// # use ftth_rsipstack::transport::SipAddr;
     /// # fn example() {
     /// # let local_addr: SipAddr = todo!();
     /// let contact = Registration::create_nat_aware_contact(

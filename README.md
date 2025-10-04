@@ -80,7 +80,7 @@ This example demonstrates:
 ### 1. Simple SIP Connection
 
 ```rust
-use rsipstack::transport::{udp::UdpConnection, SipAddr};
+use ftth_rsipstack::transport::{udp::UdpConnection, SipAddr};
 
 // Create UDP connection
 let connection = UdpConnection::create_connection("127.0.0.1:5060".parse()?, None).await?;
@@ -94,7 +94,7 @@ connection.send_raw(sip_message.as_bytes(), &target_addr).await?;
 
 ```rust
 use ftth_rsipstack as rsipstack;
-use rsipstack::transport::{TcpListenerConnection, SipAddr};
+use ftth_rsipstack::transport::{TcpListenerConnection, SipAddr};
 use tokio_util::sync::CancellationToken;
 use tokio::sync::mpsc::unbounded_channel;
 use ftth_rsip as rsip;
@@ -129,7 +129,7 @@ while let Some(event) = receiver.recv().await {
 ### 3. Using Endpoint and Transactions
 
 ```rust
-use rsipstack::{EndpointBuilder, transport::TransportLayer};
+use ftth_rsipstack::{EndpointBuilder, transport::TransportLayer};
 use tokio_util::sync::CancellationToken;
 
 // Build endpoint with transport layer
@@ -159,9 +159,9 @@ while let Some(transaction) = incoming.recv().await {
 ### 4. Creating a User Agent Client
 
 ```rust
-use rsipstack::dialog::{DialogLayer, registration::Registration};
-use rsipstack::dialog::authenticate::Credential;
-use rsipstack::dialog::invitation::InviteOption;
+use ftth_rsipstack::dialog::{DialogLayer, registration::Registration};
+use ftth_rsipstack::dialog::authenticate::Credential;
+use ftth_rsipstack::dialog::invitation::InviteOption;
 use std::sync::Arc;
 use tokio::sync::mpsc::unbounded_channel;
 
@@ -196,8 +196,8 @@ let (invite_dialog, response) = dialog_layer.do_invite(invite_option, state_send
 ### 5. Implementing a Proxy
 
 ```rust
-use rsipstack::transaction::{Transaction, key::{TransactionKey, TransactionRole}};
-use rsipstack::rsip_ext::RsipHeadersExt;
+use ftth_rsipstack::transaction::{Transaction, key::{TransactionKey, TransactionRole}};
+use ftth_rsipstack::rsip_ext::RsipHeadersExt;
 use rsip::prelude::HeadersExt;
 use std::collections::HashMap;
 

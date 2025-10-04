@@ -32,7 +32,7 @@ pub type TransactionEventSender = UnboundedSender<TransactionEvent>;
 /// # Examples
 ///
 /// ```rust,no_run
-/// use rsipstack::transaction::transaction::TransactionEvent;
+/// use ftth_rsipstack::transaction::transaction::TransactionEvent;
 /// use rsip::SipMessage;
 ///
 /// # fn handle_event(event: TransactionEvent) {
@@ -90,13 +90,14 @@ pub enum TransactionEvent {
 /// # Examples
 ///
 /// ```rust,no_run
-/// use rsipstack::transaction::{
+/// use ftth_rsipstack::rsip;
+/// use ftth_rsipstack::transaction::{
 ///     transaction::Transaction,
-///     key::{TransactionKey, TransactionRole}
+///     key::{TransactionKey, TransactionRole},
 /// };
 /// use rsip::SipMessage;
 ///
-/// # async fn example() -> rsipstack::Result<()> {
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let endpoint_inner = todo!();
 /// # let connection = None;
 /// // Create a mock request

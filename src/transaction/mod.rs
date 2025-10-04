@@ -69,7 +69,7 @@ pub type TransactionSender = UnboundedSender<Transaction>;
 /// # Examples
 ///
 /// ```rust
-/// use rsipstack::transaction::TransactionState;
+/// use ftth_rsipstack::transaction::TransactionState;
 ///
 /// let state = TransactionState::Proceeding;
 /// match state {
@@ -144,7 +144,7 @@ impl std::fmt::Display for TransactionState {
 /// # Examples
 ///
 /// ```rust
-/// use rsipstack::transaction::TransactionType;
+/// use ftth_rsipstack::transaction::TransactionType;
 /// use rsip::Method;
 ///
 /// fn get_transaction_type(method: &Method, is_client: bool) -> TransactionType {
@@ -208,10 +208,10 @@ impl std::fmt::Display for TransactionType {
 /// # Examples
 ///
 /// ```rust
-/// use rsipstack::transaction::{TransactionTimer, key::{TransactionKey, TransactionRole}};
+/// use ftth_rsipstack::transaction::{TransactionTimer, key::{TransactionKey, TransactionRole}};
 /// use std::time::Duration;
 ///
-/// # fn example() -> rsipstack::Result<()> {
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// // Create a mock request to generate a transaction key
 /// let request = rsip::Request {
 ///     method: rsip::Method::Register,

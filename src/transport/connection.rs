@@ -30,7 +30,7 @@ use tracing::debug;
 /// # Examples
 ///
 /// ```rust,no_run
-/// use rsipstack::transport::connection::TransportEvent;
+/// use ftth_rsipstack::transport::connection::TransportEvent;
 ///
 /// # fn handle_event(event: TransportEvent) {
 /// match event {
@@ -85,7 +85,8 @@ pub const KEEPALIVE_RESPONSE: &[u8] = b"\r\n";
 /// # Examples
 ///
 /// ```rust,no_run
-/// use rsipstack::transport::{SipConnection, SipAddr};
+/// use ftth_rsipstack::transport::{SipConnection, SipAddr};
+/// use ftth_rsipstack::rsip;
 /// use rsip::SipMessage;
 ///
 /// // Send a message through any connection type
@@ -93,7 +94,7 @@ pub const KEEPALIVE_RESPONSE: &[u8] = b"\r\n";
 ///     connection: &SipConnection,
 ///     message: SipMessage,
 ///     destination: Option<&SipAddr>
-/// ) -> rsipstack::Result<()> {
+/// ) -> ftth_rsipstack::Result<()> {
 ///     connection.send(message, destination).await?;
 ///     Ok(())
 /// }

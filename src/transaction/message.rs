@@ -42,8 +42,8 @@ impl EndpointInner {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::transaction::endpoint::EndpointInner;
-    /// # async fn example(endpoint: &EndpointInner) -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::transaction::endpoint::EndpointInner;
+    /// # async fn example(endpoint: &EndpointInner) -> ftth_rsipstack::Result<()> {
     /// // Create an INVITE request
     /// let via = endpoint.get_via(None, None)?;
     /// let from = rsip::typed::From {
@@ -146,7 +146,7 @@ impl EndpointInner {
     /// ## Success Response
     ///
     /// ```rust,no_run
-    /// # use rsipstack::transaction::endpoint::EndpointInner;
+    /// # use ftth_rsipstack::transaction::endpoint::EndpointInner;
     /// # fn example(endpoint: &EndpointInner, request: &rsip::Request, sdp_answer: String) {
     /// let response = endpoint.make_response(
     ///     &request,
@@ -159,7 +159,7 @@ impl EndpointInner {
     /// ## Error Response
     ///
     /// ```rust,no_run
-    /// # use rsipstack::transaction::endpoint::EndpointInner;
+    /// # use ftth_rsipstack::transaction::endpoint::EndpointInner;
     /// # fn example(endpoint: &EndpointInner, request: &rsip::Request) {
     /// let response = endpoint.make_response(
     ///     &request,
@@ -172,7 +172,7 @@ impl EndpointInner {
     /// ## Provisional Response
     ///
     /// ```rust,no_run
-    /// # use rsipstack::transaction::endpoint::EndpointInner;
+    /// # use ftth_rsipstack::transaction::endpoint::EndpointInner;
     /// # fn example(endpoint: &EndpointInner, request: &rsip::Request) {
     /// let response = endpoint.make_response(
     ///     &request,

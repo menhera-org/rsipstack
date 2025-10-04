@@ -24,7 +24,7 @@ use std::{fmt, hash::Hash, net::SocketAddr};
 /// # Examples
 ///
 /// ```rust
-/// use rsipstack::transport::SipAddr;
+/// use ftth_rsipstack::transport::SipAddr;
 /// use rsip::transport::Transport;
 /// use std::net::SocketAddr;
 ///

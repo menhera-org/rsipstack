@@ -28,8 +28,8 @@ use rsip::{Header, Param, Response};
 /// ## Basic Usage
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::authenticate::Credential;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::authenticate::Credential;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// let credential = Credential {
 ///     username: "alice".to_string(),
 ///     password: "secret123".to_string(),
@@ -42,8 +42,8 @@ use rsip::{Header, Param, Response};
 /// ## Usage with Registration
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::authenticate::Credential;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::authenticate::Credential;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// let credential = Credential {
 ///     username: "alice".to_string(),
 ///     password: "secret123".to_string(),
@@ -59,9 +59,9 @@ use rsip::{Header, Param, Response};
 /// ## Usage with INVITE
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::authenticate::Credential;
-/// # use rsipstack::dialog::invitation::InviteOption;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::authenticate::Credential;
+/// # use ftth_rsipstack::dialog::invitation::InviteOption;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// # let sdp_bytes = vec![];
 /// # let credential = Credential {
 /// #     username: "alice".to_string(),
@@ -111,10 +111,10 @@ pub struct Credential {
 /// ## Automatic Authentication Handling
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::authenticate::{handle_client_authenticate, Credential};
-/// # use rsipstack::transaction::transaction::Transaction;
+/// # use ftth_rsipstack::dialog::authenticate::{handle_client_authenticate, Credential};
+/// # use ftth_rsipstack::transaction::transaction::Transaction;
 /// # use rsip::Response;
-/// # async fn example() -> rsipstack::Result<()> {
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let new_seq = 1u32;
 /// # let original_tx: Transaction = todo!();
 /// # let auth_challenge_response: Response = todo!();
@@ -140,10 +140,10 @@ pub struct Credential {
 /// ## Manual Authentication Flow
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::authenticate::{handle_client_authenticate, Credential};
-/// # use rsipstack::transaction::transaction::Transaction;
+/// # use ftth_rsipstack::dialog::authenticate::{handle_client_authenticate, Credential};
+/// # use ftth_rsipstack::transaction::transaction::Transaction;
 /// # use rsip::{SipMessage, StatusCode, Response};
-/// # async fn example() -> rsipstack::Result<()> {
+/// # async fn example() -> ftth_rsipstack::Result<()> {
 /// # let mut tx: Transaction = todo!();
 /// # let credential = Credential {
 /// #     username: "alice".to_string(),

@@ -54,8 +54,8 @@ use tracing::{debug, info, warn};
 /// # Examples
 ///
 /// ```rust,no_run
-/// use rsipstack::dialog::dialog::DialogState;
-/// use rsipstack::dialog::DialogId;
+/// use ftth_rsipstack::dialog::dialog::DialogState;
+/// use ftth_rsipstack::dialog::DialogId;
 ///
 /// # fn example() {
 /// # let dialog_id = DialogId {
@@ -112,7 +112,7 @@ pub enum TerminatedReason {
 /// # Examples
 ///
 /// ```rust,no_run
-/// use rsipstack::dialog::dialog::Dialog;
+/// use ftth_rsipstack::dialog::dialog::Dialog;
 ///
 /// # fn handle_dialog(dialog: Dialog) {
 /// match dialog {

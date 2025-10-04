@@ -41,8 +41,8 @@ use tracing::{debug, info, warn};
 /// ## Basic Voice Call
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::invitation::InviteOption;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::invitation::InviteOption;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// # let sdp_offer_bytes = vec![];
 /// let invite_option = InviteOption {
 ///     caller: "sip:alice@example.com".try_into()?,
@@ -59,9 +59,9 @@ use tracing::{debug, info, warn};
 /// ```
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::dialog_layer::DialogLayer;
-/// # use rsipstack::dialog::invitation::InviteOption;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+/// # use ftth_rsipstack::dialog::invitation::InviteOption;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// # let dialog_layer: DialogLayer = todo!();
 /// # let invite_option: InviteOption = todo!();
 /// let request = dialog_layer.make_invite_request(&invite_option)?;
@@ -73,8 +73,8 @@ use tracing::{debug, info, warn};
 /// ## Call with Custom Headers
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::invitation::InviteOption;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::invitation::InviteOption;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// # let sdp_bytes = vec![];
 /// # let auth_credential = todo!();
 /// let custom_headers = vec![
@@ -99,9 +99,9 @@ use tracing::{debug, info, warn};
 /// ## Call with Authentication
 ///
 /// ```rust,no_run
-/// # use rsipstack::dialog::invitation::InviteOption;
-/// # use rsipstack::dialog::authenticate::Credential;
-/// # fn example() -> rsipstack::Result<()> {
+/// # use ftth_rsipstack::dialog::invitation::InviteOption;
+/// # use ftth_rsipstack::dialog::authenticate::Credential;
+/// # fn example() -> ftth_rsipstack::Result<()> {
 /// # let sdp_bytes = vec![];
 /// let credential = Credential {
 ///     username: "alice".to_string(),
@@ -229,9 +229,9 @@ impl DialogLayer {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::dialog_layer::DialogLayer;
-    /// # use rsipstack::dialog::invitation::InviteOption;
-    /// # fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+    /// # use ftth_rsipstack::dialog::invitation::InviteOption;
+    /// # fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog_layer: DialogLayer = todo!();
     /// # let invite_option: InviteOption = todo!();
     /// let request = dialog_layer.make_invite_request(&invite_option)?;
@@ -316,9 +316,9 @@ impl DialogLayer {
     /// ## Basic Call Setup
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::dialog_layer::DialogLayer;
-    /// # use rsipstack::dialog::invitation::InviteOption;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+    /// # use ftth_rsipstack::dialog::invitation::InviteOption;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog_layer: DialogLayer = todo!();
     /// # let invite_option: InviteOption = todo!();
     /// # let state_sender = todo!();
@@ -345,10 +345,10 @@ impl DialogLayer {
     /// ## Monitoring Dialog State
     ///
     /// ```rust,no_run
-    /// # use rsipstack::dialog::dialog_layer::DialogLayer;
-    /// # use rsipstack::dialog::invitation::InviteOption;
-    /// # use rsipstack::dialog::dialog::DialogState;
-    /// # async fn example() -> rsipstack::Result<()> {
+    /// # use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
+    /// # use ftth_rsipstack::dialog::invitation::InviteOption;
+    /// # use ftth_rsipstack::dialog::dialog::DialogState;
+    /// # async fn example() -> ftth_rsipstack::Result<()> {
     /// # let dialog_layer: DialogLayer = todo!();
     /// # let invite_option: InviteOption = todo!();
     /// let (state_tx, mut state_rx) = tokio::sync::mpsc::unbounded_channel();

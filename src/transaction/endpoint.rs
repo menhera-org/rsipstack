@@ -117,7 +117,7 @@ pub type EndpointInnerRef = Arc<EndpointInner>;
 /// # Examples
 ///
 /// ```rust
-/// use rsipstack::EndpointBuilder;
+/// use ftth_rsipstack::EndpointBuilder;
 /// use std::time::Duration;
 ///
 /// let endpoint = EndpointBuilder::new()
@@ -153,7 +153,7 @@ pub struct EndpointBuilder {
 /// # Examples
 ///
 /// ```rust,no_run
-/// use rsipstack::EndpointBuilder;
+/// use ftth_rsipstack::EndpointBuilder;
 /// use tokio_util::sync::CancellationToken;
 ///
 /// #[tokio::main]
