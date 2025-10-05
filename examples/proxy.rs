@@ -380,7 +380,9 @@ async fn handle_invite(state: AppState, mut tx: Transaction) -> Result<()> {
     let mut inv_req = tx.original.clone();
     let via = tx.endpoint_inner.get_via(None, None)?;
     inv_req.headers.push_front(via.into());
-    inv_req.headers.push_front(record_route.clone().into());
+    if tx.endpoint_inner.option.follow_record_route {
+        inv_req.headers.push_front(record_route.clone().into());
+    }
     let key = TransactionKey::from_request(&inv_req, TransactionRole::Client)
         .expect("client_transaction");
 
