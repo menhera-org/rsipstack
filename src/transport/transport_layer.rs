@@ -65,8 +65,9 @@ impl TransportLayer {
     }
 
     pub async fn serve_listens(&self) -> Result<()> {
-        let listens = match self.inner.listens.read() {
-            Ok(listens) => listens.clone(),
+        // Collect the listeners under the read lock and drop it before awaiting.
+        let listens: Vec<SipConnection> = match self.inner.listens.read() {
+            Ok(listens_guard) => listens_guard.iter().cloned().collect(),
             Err(e) => {
                 return Err(crate::Error::Error(format!(
                     "Failed to read listens: {:?}",
@@ -74,15 +75,18 @@ impl TransportLayer {
                 )));
             }
         };
+
         for transport in listens {
+            let inner = self.inner.clone();
             let addr = transport.get_addr().clone();
-            match TransportLayerInner::serve_listener(self.inner.clone(), transport).await {
-                Ok(()) => {}
-                Err(e) => {
+
+            tokio::spawn(async move {
+                if let Err(e) = TransportLayerInner::serve_listener(inner, transport).await {
                     warn!(?addr, "Failed to serve listener: {:?}", e);
                 }
-            }
+            });
         }
+
         Ok(())
     }
 
