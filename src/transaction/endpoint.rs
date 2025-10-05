@@ -29,6 +29,7 @@ pub trait MessageInspector: Send + Sync {
     fn after_received(&self, msg: SipMessage) -> SipMessage;
 }
 
+#[non_exhaustive]
 pub struct EndpointOption {
     pub t1: Duration,
     pub t4: Duration,
@@ -37,6 +38,7 @@ pub struct EndpointOption {
     pub ignore_out_of_dialog_option: bool,
     pub callid_suffix: Option<String>,
     pub dialog_keepalive_duration: Option<Duration>,
+    pub folow_record_root: bool,
 }
 
 impl Default for EndpointOption {
@@ -49,6 +51,7 @@ impl Default for EndpointOption {
             ignore_out_of_dialog_option: true,
             callid_suffix: None,
             dialog_keepalive_duration: Some(Duration::from_secs(60)),
+            folow_record_root: true,
         }
     }
 }
@@ -585,6 +588,11 @@ impl EndpointBuilder {
     }
     pub fn with_inspector(&mut self, inspector: Box<dyn MessageInspector>) -> &mut Self {
         self.inspector = Some(inspector);
+        self
+    }
+    pub fn follow_record_route(&mut self, enabled: bool) -> &mut Self {
+        self.option.get_or_insert_with(EndpointOption::default)
+            .folow_record_root = enabled;
         self
     }
     pub fn build(&mut self) -> Endpoint {

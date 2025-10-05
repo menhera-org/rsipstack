@@ -285,9 +285,11 @@ impl EndpointInner {
 
             // update route set from Record-Route header
             let mut route_set = Vec::new();
-            for header in resp.headers.iter() {
-                if let Header::RecordRoute(record_route) = header {
-                    route_set.push(Header::Route(Route::from(record_route.value())));
+            if self.option.folow_record_root {
+                for header in resp.headers.iter() {
+                    if let Header::RecordRoute(record_route) = header {
+                        route_set.push(Header::Route(Route::from(record_route.value())));
+                    }
                 }
             }
 
