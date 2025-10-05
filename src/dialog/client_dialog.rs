@@ -567,7 +567,7 @@ impl ClientInviteDialog {
 
                             // update route set from Record-Route header
                             let mut route_set = Vec::new();
-                            if self.inner.endpoint_inner.option.folow_record_root {
+                            if self.inner.endpoint_inner.option.follow_record_route {
                                 for header in resp.headers.iter() {
                                     if let Header::RecordRoute(record_route) = header {
                                         route_set.push(Route::from(record_route.value()));

@@ -235,7 +235,7 @@ impl DialogInner {
         }
 
         let mut route_set = vec![];
-        if endpoint_inner.option.folow_record_root {
+        if endpoint_inner.option.follow_record_route {
             for h in initial_request.headers.iter() {
                 if let Header::RecordRoute(rr) = h {
                     route_set.push(Route::from(rr.value()));
@@ -358,7 +358,7 @@ impl DialogInner {
             .as_ref()
             .map(|c| headers.push(Contact::from(c.clone()).into()));
 
-        if self.endpoint_inner.option.folow_record_root {
+        if self.endpoint_inner.option.follow_record_route {
             let route_set = self.route_set.lock().unwrap();
             headers.extend(route_set.iter().cloned().map(Header::Route));
         }

@@ -38,7 +38,7 @@ pub struct EndpointOption {
     pub ignore_out_of_dialog_option: bool,
     pub callid_suffix: Option<String>,
     pub dialog_keepalive_duration: Option<Duration>,
-    pub folow_record_root: bool,
+    pub follow_record_route: bool,
 }
 
 impl Default for EndpointOption {
@@ -51,7 +51,7 @@ impl Default for EndpointOption {
             ignore_out_of_dialog_option: true,
             callid_suffix: None,
             dialog_keepalive_duration: Some(Duration::from_secs(60)),
-            folow_record_root: true,
+            follow_record_route: true,
         }
     }
 }
@@ -592,7 +592,7 @@ impl EndpointBuilder {
     }
     pub fn follow_record_route(&mut self, enabled: bool) -> &mut Self {
         self.option.get_or_insert_with(EndpointOption::default)
-            .folow_record_root = enabled;
+            .follow_record_route = enabled;
         self
     }
     pub fn build(&mut self) -> Endpoint {
