@@ -259,10 +259,12 @@ impl EndpointInner {
             match event {
                 TransportEvent::Incoming(msg, connection, from) => {
                     match self.on_received_message(msg, connection).await {
-                        Ok(()) => trace!(addr=%from, "on_received_message completed"),
+                        Ok(()) => {
+                            trace!(addr = %from, "on_received_message completed");
+                        }
                         Err(e) => {
-                            warn!(addr=%from,"on_received_message error: {}", e);
-                        },
+                            warn!(addr = %from, "on_received_message error: {}", e);
+                        }
                     }
                 }
                 TransportEvent::New(t) => {

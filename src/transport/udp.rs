@@ -148,14 +148,19 @@ impl UdpConnection {
                 "udp received"
             );
 
-            sender.send(TransportEvent::Incoming(
+            let sent_res = sender.send(TransportEvent::Incoming(
                 msg,
                 SipConnection::Udp(self.clone()),
                 SipAddr {
                     r#type: Some(rsip::transport::Transport::Udp),
                     addr: addr.into(),
                 },
-            ))?;
+            ));
+            debug!(
+                "sender.send() result to transaction: {:?}",
+                sent_res,
+            );
+            sent_res?;
         }
     }
 
