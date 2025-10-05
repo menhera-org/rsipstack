@@ -255,13 +255,14 @@ impl EndpointInner {
         };
 
         while let Some(event) = transport_rx.recv().await {
+            trace!(?event, "endpoint received transport event");
             match event {
                 TransportEvent::Incoming(msg, connection, from) => {
                     match self.on_received_message(msg, connection).await {
-                        Ok(()) => {}
+                        Ok(()) => trace!(addr=%from, "on_received_message completed"),
                         Err(e) => {
                             warn!(addr=%from,"on_received_message error: {}", e);
-                        }
+                        },
                     }
                 }
                 TransportEvent::New(t) => {
@@ -272,6 +273,8 @@ impl EndpointInner {
                 }
             }
         }
+
+        warn!("transport_rx closed");
         Ok(())
     }
 
