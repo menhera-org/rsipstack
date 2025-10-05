@@ -16,13 +16,22 @@ use tokio::sync::mpsc::unbounded_channel;
 use tokio_util::sync::CancellationToken;
 
 async fn create_test_endpoint() -> crate::Result<crate::transaction::endpoint::Endpoint> {
+    create_test_endpoint_with_follow_record_route(true).await
+}
+
+async fn create_test_endpoint_with_follow_record_route(
+    follow_record_route: bool,
+) -> crate::Result<crate::transaction::endpoint::Endpoint> {
     let token = CancellationToken::new();
     let tl = TransportLayer::new(token.child_token());
-    let endpoint = EndpointBuilder::new()
+    let mut builder = EndpointBuilder::new();
+    builder
         .with_user_agent("rsipstack-test")
-        .with_transport_layer(tl)
-        .build();
-    Ok(endpoint)
+        .with_transport_layer(tl);
+    if !follow_record_route {
+        builder.follow_record_route(false);
+    }
+    Ok(builder.build())
 }
 
 fn create_invite_request(from_tag: &str, to_tag: &str, call_id: &str) -> Request {
@@ -42,6 +51,19 @@ fn create_invite_request(from_tag: &str, to_tag: &str, call_id: &str) -> Request
         version: rsip::Version::V2,
         body: b"v=0\r\no=alice 2890844526 2890844527 IN IP4 host.atlanta.com\r\n".to_vec(),
     }
+}
+
+fn create_invite_request_with_record_route(
+    from_tag: &str,
+    to_tag: &str,
+    call_id: &str,
+    record_routes: &[&str],
+) -> Request {
+    let mut request = create_invite_request(from_tag, to_tag, call_id);
+    for rr in record_routes {
+        request.headers.push(RecordRoute::new(*rr).into());
+    }
+    request
 }
 
 #[tokio::test]
@@ -192,6 +214,65 @@ async fn test_client_dialog_state_transitions() -> crate::Result<()> {
     let state = client_dialog.inner.state.lock().unwrap().clone();
     assert!(matches!(state, DialogState::Confirmed(_, _)));
     assert!(client_dialog.inner.is_confirmed());
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn test_client_dialog_route_set_respects_follow_record_route() -> crate::Result<()> {
+    let endpoint_follow = create_test_endpoint_with_follow_record_route(true).await?;
+    let (state_sender, _) = unbounded_channel();
+    let dialog_id = DialogId {
+        call_id: "route-test-follow".to_string(),
+        from_tag: "alice-tag".to_string(),
+        to_tag: "".to_string(),
+    };
+
+    let invite_req = create_invite_request_with_record_route(
+        "alice-tag",
+        "",
+        "route-test-follow",
+        &["<sip:proxy1.example.com;lr>", "<sip:proxy2.example.com;lr>"],
+    );
+    let (tu_sender, _tu_receiver) = unbounded_channel();
+    let dialog_follow = DialogInner::new(
+        TransactionRole::Client,
+        dialog_id.clone(),
+        invite_req,
+        endpoint_follow.inner.clone(),
+        state_sender,
+        None,
+        Some(Uri::try_from("sip:alice@alice.example.com:5060").unwrap()),
+        tu_sender,
+    )?;
+    let stored_routes = dialog_follow.route_set.lock().unwrap().clone();
+    assert_eq!(stored_routes.len(), 2);
+
+    let endpoint_skip = create_test_endpoint_with_follow_record_route(false).await?;
+    let (state_sender_skip, _) = unbounded_channel();
+    let invite_req_skip = create_invite_request_with_record_route(
+        "alice-tag",
+        "",
+        "route-test-skip",
+        &["<sip:proxy.example.com;lr>"],
+    );
+    let (tu_sender_skip, _tu_receiver_skip) = unbounded_channel();
+    let dialog_skip = DialogInner::new(
+        TransactionRole::Client,
+        DialogId {
+            call_id: "route-test-skip".to_string(),
+            from_tag: "alice-tag".to_string(),
+            to_tag: "".to_string(),
+        },
+        invite_req_skip,
+        endpoint_skip.inner.clone(),
+        state_sender_skip,
+        None,
+        Some(Uri::try_from("sip:alice@alice.example.com:5060").unwrap()),
+        tu_sender_skip,
+    )?;
+    let stored_routes_skip = dialog_skip.route_set.lock().unwrap().clone();
+    assert!(stored_routes_skip.is_empty());
 
     Ok(())
 }

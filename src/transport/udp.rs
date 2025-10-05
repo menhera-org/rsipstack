@@ -1,4 +1,5 @@
 use super::{connection::TransportSender, SipAddr, SipConnection};
+use crate::rsip;
 use crate::{
     transport::{
         connection::{KEEPALIVE_REQUEST, KEEPALIVE_RESPONSE},
@@ -6,7 +7,6 @@ use crate::{
     },
     Result,
 };
-use crate::rsip;
 use std::{net::SocketAddr, sync::Arc};
 use tokio::net::UdpSocket;
 use tokio_util::sync::CancellationToken;

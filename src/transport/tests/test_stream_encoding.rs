@@ -1,9 +1,9 @@
+use crate::rsip;
 use crate::transport::{
     connection::{KEEPALIVE_REQUEST, KEEPALIVE_RESPONSE},
     stream::SipCodec,
 };
 use bytes::BytesMut;
-use crate::rsip;
 use rsip::{
     prelude::{HeadersExt, UntypedHeader},
     SipMessage,

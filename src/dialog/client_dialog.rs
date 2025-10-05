@@ -1,9 +1,9 @@
 use super::dialog::DialogInnerRef;
 use super::DialogId;
 use crate::dialog::dialog::DialogInner;
+use crate::rsip;
 use crate::transaction::transaction::Transaction;
 use crate::Result;
-use crate::rsip;
 use crate::{
     dialog::{
         authenticate::handle_client_authenticate,

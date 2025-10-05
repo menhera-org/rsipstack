@@ -3,12 +3,12 @@
 //! This module contains tests for dialog management and lifecycle
 
 use crate::dialog::{dialog_layer::DialogLayer, DialogId};
+use crate::rsip;
 use crate::transaction::{
     endpoint::EndpointBuilder,
     key::{TransactionKey, TransactionRole},
     transaction::Transaction,
 };
-use crate::rsip;
 use crate::transport::{udp::UdpConnection, TransportLayer};
 use rsip::{headers::*, Request};
 use tokio::sync::mpsc::unbounded_channel;

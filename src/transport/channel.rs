@@ -1,10 +1,10 @@
 use tokio_util::sync::CancellationToken;
 
-use crate::rsip;
 use super::{
     connection::{TransportReceiver, TransportSender},
     SipAddr, SipConnection,
 };
+use crate::rsip;
 use crate::Result;
 use std::sync::{Arc, Mutex};
 

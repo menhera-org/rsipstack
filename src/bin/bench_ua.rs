@@ -1,11 +1,11 @@
 use clap::Parser;
-use ftth_rsipstack::rsip;
 use ftth_rsipstack::dialog::dialog::{
     Dialog, DialogState, DialogStateReceiver, DialogStateSender, TerminatedReason,
 };
 use ftth_rsipstack::dialog::dialog_layer::DialogLayer;
 use ftth_rsipstack::dialog::invitation::InviteOption;
 use ftth_rsipstack::dialog::DialogId;
+use ftth_rsipstack::rsip;
 use ftth_rsipstack::Result;
 use ftth_rsipstack::{
     dialog::authenticate::Credential,

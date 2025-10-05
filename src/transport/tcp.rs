@@ -1,3 +1,4 @@
+use crate::rsip;
 use crate::{
     transport::{
         connection::TransportSender,
@@ -7,7 +8,6 @@ use crate::{
     },
     Result,
 };
-use crate::rsip;
 use rsip::SipMessage;
 use std::{fmt, sync::Arc};
 use tokio::net::TcpStream;

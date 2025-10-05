@@ -1,9 +1,9 @@
+use crate::rsip;
 use crate::transport::SipConnection;
 use crate::{
     transport::{udp::UdpConnection, TransportLayer},
     EndpointBuilder,
 };
-use crate::rsip;
 use rsip::headers::*;
 use std::time::Duration;
 use tokio::{select, time::sleep};

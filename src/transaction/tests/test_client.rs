@@ -1,8 +1,8 @@
+use crate::rsip;
 use crate::transaction::key::{TransactionKey, TransactionRole};
 use crate::transaction::transaction::Transaction;
 use crate::transport::udp::UdpConnection;
 use crate::{transport::TransportEvent, Result};
-use crate::rsip;
 use rsip::{headers::*, SipMessage};
 use std::time::Duration;
 use tokio::{select, sync::mpsc::unbounded_channel, time::sleep};

@@ -1,5 +1,5 @@
-use crate::transport::SipConnection;
 use crate::rsip;
+use crate::transport::SipConnection;
 use rsip::{headers::*, prelude::HeadersExt, SipMessage, Transport};
 use std::net::SocketAddr;
 

@@ -2,11 +2,11 @@ use super::authenticate::Credential;
 use super::dialog::DialogStateSender;
 use super::{dialog::Dialog, server_dialog::ServerInviteDialog, DialogId};
 use crate::dialog::dialog::DialogInner;
+use crate::rsip;
 use crate::transaction::key::TransactionRole;
 use crate::transaction::make_tag;
 use crate::transaction::{endpoint::EndpointInnerRef, transaction::Transaction};
 use crate::Result;
-use crate::rsip;
 use rsip::Request;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::{

@@ -1,6 +1,6 @@
+use crate::rsip;
 use crate::{dialog::DialogId, transaction::key::TransactionKey, transport::SipAddr};
 use thiserror::Error as ThisError;
-use crate::rsip;
 
 #[derive(Debug, ThisError)]
 pub enum Error {

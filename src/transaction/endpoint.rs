@@ -591,7 +591,8 @@ impl EndpointBuilder {
         self
     }
     pub fn follow_record_route(&mut self, enabled: bool) -> &mut Self {
-        self.option.get_or_insert_with(EndpointOption::default)
+        self.option
+            .get_or_insert_with(EndpointOption::default)
             .follow_record_route = enabled;
         self
     }

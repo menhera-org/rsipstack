@@ -1,3 +1,4 @@
+use crate::rsip;
 use crate::{
     transport::{
         connection::{TransportSender, KEEPALIVE_REQUEST, KEEPALIVE_RESPONSE},
@@ -5,7 +6,6 @@ use crate::{
     },
     Result,
 };
-use crate::rsip;
 use bytes::{Buf, BytesMut};
 use rsip::SipMessage;
 use tokio::{

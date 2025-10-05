@@ -1,8 +1,8 @@
 use super::{connection::TransportSender, sip_addr::SipAddr, tcp::TcpConnection, SipConnection};
+use crate::rsip;
 use crate::transaction::key::TransactionKey;
 use crate::transport::connection::TransportReceiver;
 use crate::{transport::TransportEvent, Result};
-use crate::rsip;
 use std::sync::{Mutex, RwLock};
 use std::{collections::HashMap, sync::Arc};
 use tokio::select;

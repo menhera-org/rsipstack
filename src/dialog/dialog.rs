@@ -5,6 +5,7 @@ use super::{
     DialogId,
 };
 use crate::{
+    rsip,
     rsip_ext::extract_uri_from_contact,
     transaction::{
         endpoint::EndpointInnerRef,
@@ -14,7 +15,6 @@ use crate::{
     },
     transport::SipAddr,
     Result,
-    rsip,
 };
 use rsip::{
     headers::Route,

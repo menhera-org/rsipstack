@@ -1,6 +1,6 @@
 use super::{endpoint::EndpointInner, make_call_id};
-use crate::{rsip_ext::extract_uri_from_contact, transaction::make_via_branch, Result};
 use crate::rsip;
+use crate::{rsip_ext::extract_uri_from_contact, transaction::make_via_branch, Result};
 use rsip::{
     header,
     headers::Route,

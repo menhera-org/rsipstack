@@ -4,12 +4,12 @@
 //! according to RFC 3261 Section 17.
 
 use super::create_test_endpoint;
+use crate::rsip;
 use crate::transaction::{
     key::{TransactionKey, TransactionRole},
     transaction::Transaction,
     TransactionState, TransactionType,
 };
-use crate::rsip;
 use rsip::headers::*;
 
 /// Test helper to create a mock request

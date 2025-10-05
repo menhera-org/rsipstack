@@ -1,6 +1,6 @@
+use crate::rsip;
 use crate::transport::SipConnection;
 use crate::{Error, Result};
-use crate::rsip;
 use rsip::{
     message::HasHeaders,
     prelude::{HeadersExt, UntypedHeader},

@@ -1,9 +1,9 @@
 use super::DialogId;
+use crate::rsip;
 use crate::transaction::key::{TransactionKey, TransactionRole};
 use crate::transaction::transaction::Transaction;
 use crate::transaction::{make_via_branch, random_text, CNONCE_LEN};
 use crate::Result;
-use crate::rsip;
 use rsip::headers::auth::{AuthQop, Qop};
 use rsip::prelude::{HasHeaders, HeadersExt, ToTypedHeader};
 use rsip::services::DigestGenerator;

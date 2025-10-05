@@ -1,5 +1,5 @@
-use crate::{Error, Result};
 use crate::rsip;
+use crate::{Error, Result};
 use rsip::{
     prelude::{HeadersExt, UntypedHeader},
     Request, Response,
